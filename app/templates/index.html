@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tarefas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Lista de Tarefas</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome da Tarefa</th>
+                <th>Custo (R$)</th>
+                <th>Data Limite</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tarefa in tarefas %}
+            <tr data-id="{{ tarefa.id }}" {% if tarefa.custo >= 1000 %}style="background-color: yellow;"{% endif %}>
+                <td>{{ tarefa.nome }}</td>
+                <td>R$ {{ tarefa.custo }}</td>
+                <td>{{ tarefa.data_limite }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{{ url_for('main.editar', id=tarefa.id) }}">Editar</a>
+                        <form action="{{ url_for('main.excluir', id=tarefa.id) }}" method="POST" style="display:inline;">
+                            <button type="submit">Excluir</button>
+                        </form>
+                        <form action="{{ url_for('main.reordenar', id=tarefa.id, direcao='subir') }}" method="POST" style="display:inline;">
+                            <button class="btn-reordenar subir" {% if loop.index == 1 %}disabled{% endif %}>Subir</button>
+                        </form>
+                        <form action="{{ url_for('main.reordenar', id=tarefa.id, direcao='descer') }}" method="POST" style="display:inline;">
+                            <button class="btn-reordenar descer" {% if loop.index == loop.length %}disabled{% endif %}>Descer</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('main.incluir') }}" class="btn-include">Incluir nova tarefa</a>
+</body>
+</html>
